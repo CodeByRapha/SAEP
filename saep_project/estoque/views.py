@@ -56,7 +56,7 @@ class ProductListView(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        # ordenação correta (A-Z ignorando maiúsculas/minúsculas)
+        # ordenação A-Z ignorando maiúsculas/minúsculas
         qs = super().get_queryset().annotate(
             name_lower=Lower("name")
         ).order_by("name_lower")

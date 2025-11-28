@@ -21,9 +21,10 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # URLs do app estoque
+    # URLs do app
     path('estoque/', include('estoque.urls', namespace='estoque')),
 
-    # Página inicial → abre login automaticamente
-    path('', include('estoque.urls', namespace='estoque')),
+    # Página inicial → redireciona para o login
+    path('', RedirectView.as_view(url='/estoque/login/')),
 ]
+
