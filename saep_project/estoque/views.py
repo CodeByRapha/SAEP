@@ -4,6 +4,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout  # <-- adicionado
+from django.db.models.functions import Lower  # <-- necessário para ordenação correta
 from .models import Product, StockMovement
 from .forms import ProductForm, StockMovementForm
 
@@ -55,10 +56,17 @@ class ProductListView(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        # ordenação correta (A-Z ignorando maiúsculas/minúsculas)
+        qs = super().get_queryset().annotate(
+            name_lower=Lower("name")
+        ).order_by("name_lower")
+
         q = self.request.GET.get('q')
         if q:
-            qs = qs.filter(name__icontains=q)
+            qs = qs.filter(name__icontains=q).annotate(
+                name_lower=Lower("name")
+            ).order_by("name_lower")
+
         return qs
 
 
